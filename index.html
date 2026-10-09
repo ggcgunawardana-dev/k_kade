@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KOTTU KADE | Premium Cheese Kottu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- GSAP for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <style>
+        :root {
+            --primary-yellow: #FFD700;
+            --dark-bg: #121212;
+            --accent-red: #FF4500;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: white;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .text-gradient {
+            background: linear-gradient(90deg, var(--primary-yellow), var(--accent-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero Section Styling */
+        .hero-pattern {
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(rgba(255, 215, 0, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        /* Card Hover Effects */
+        .menu-card {
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+
+        /* Animated Flame (CSS) */
+        .flame-container {
+            display: inline-block;
+            position: relative;
+        }
+        .flame {
+            animation: flicker 0.5s infinite alternate;
+            color: var(--accent-red);
+        }
+        @keyframes flicker {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.1) translateY(-2px); opacity: 1; color: var(--primary-yellow); }
+        }
+
+        /* Navbar Blur */
+        .nav-blur {
+            backdrop-filter: blur(15px);
+            background: rgba(18, 18, 18, 0.85);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-yellow);
+            border-radius: 4px;
+        }
+
+        /* Loader */
+        #loader {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark-bg);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease;
+        }
+        
+        .chopping-animation {
+            font-size: 4rem;
+            animation: chop 0.5s infinite alternate ease-in-out;
+        }
+
+        @keyframes chop {
+            0% { transform: rotate(-20deg) translateY(-10px); }
+            100% { transform: rotate(10deg) translateY(10px); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Loader -->
+    <div id="loader">
+        <div class="chopping-animation">🔪</div>
+        <h2 class="text-2xl font-bold mt-4 text-gradient uppercase tracking-widest">KOTTU KADE</h2>
+        <p class="text-gray-400 text-sm mt-2 animate-pulse">රස්නෙටම හදමින් පවතී...</p>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 nav-blur border-b border-gray-800 transition-all duration-300 py-4 px-6 md:px-12 flex justify-between items-center" id="navbar">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-fire flame text-2xl"></i>
+            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tighter text-white">
+                KOTTU<span class="text-yellow-400">KADE</span>
+            </h1>
+        </div>
+        
+        <!-- Desktop Menu -->
+        <ul class="hidden md:flex gap-8 font-medium text-gray-300">
+            <li><a href="#home" class="hover:text-yellow-400 transition-colors">Home</a></li>
+            <li><a href="#menu" class="hover:text-yellow-400 transition-colors">Our Menu</a></li>
+            <li><a href="#about" class="hover:text-yellow-400 transition-colors">About Us</a></li>
+            <li><a href="#contact" class="hover:text-yellow-400 transition-colors">Contact</a></li>
+        </ul>
+
+        <a href="#menu" class="hidden md:block bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-6 rounded-full transition-transform hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(255,215,0,0.4)]">
+            Order Now
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden text-2xl text-yellow-400 focus:outline-none">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black/95 z-40 flex flex-col justify-center items-center translate-x-full transition-transform duration-500 ease-in-out">
+        <button id="close-menu-btn" class="absolute top-6 right-6 text-3xl text-gray-400 hover:text-white">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        <ul class="flex flex-col gap-8 text-2xl font-semibold text-center text-gray-200">
+            <li><a href="#home" class="mobile-link hover:text-yellow-400 transition-colors">Home</a></li>
+            <li><a href="#menu" class="mobile-link hover:text-yellow-400 transition-colors">Our Menu</a></li>
+            <li><a href="#about" class="mobile-link hover:text-yellow-400 transition-colors">About Us</a></li>
+            <li><a href="#contact" class="mobile-link hover:text-yellow-400 transition-colors">Contact</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen hero-pattern flex items-center justify-center pt-20 overflow-hidden">
+        <!-- Background Elements -->
+        <div class="absolute top-1/4 left-10 w-64 h-64 bg-yellow-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-1/4 right-10 w-80 h-80 bg-red-500/10 rounded-full blur-3xl"></div>
+
+        <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center relative z-10">
+            
+            <!-- Text Content -->
+            <div class="w-full md:w-1/2 text-center md:text-left pt-10 md:pt-0 hero-content">
+                <div class="inline-block px-4 py-1.5 rounded-full bg-gray-800/80 border border-gray-700 text-yellow-400 text-sm font-semibold mb-6 flex items-center gap-2 mx-auto md:mx-0 w-max">
+                    <span class="relative flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-yellow-500"></span>
+                    </span>
+                    The Ultimate Cheese Experience
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-black mb-6 leading-tight">
+                    Sri Lanka's <br>
+                    <span class="text-gradient">Cheesiest</span> Kottu
+                </h1>
+                
+                <p class="text-gray-400 text-lg md:text-xl mb-8 max-w-lg mx-auto md:mx-0">
+                    We do one thing, and we do it perfectly. Experience our legendary Cheese Kottu loaded with premium ingredients. රස්නෙටම, චීස් බේරෙන්න!
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <a href="#menu" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold text-lg py-4 px-8 rounded-full transition-all hover:shadow-[0_0_20px_rgba(255,215,0,0.5)] flex items-center justify-center gap-2">
+                        Explore Menu <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                    <a href="#contact" class="bg-transparent hover:bg-gray-800 border-2 border-gray-600 text-white font-bold text-lg py-4 px-8 rounded-full transition-all flex items-center justify-center">
+                        Find Us
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="mt-12 flex items-center justify-center md:justify-start gap-8 border-t border-gray-800 pt-8">
+                    <div>
+                        <h4 class="text-3xl font-bold text-white">100%</h4>
+                        <p class="text-gray-500 text-sm">Real Cheese</p>
+                    </div>
+                    <div class="h-10 w-px bg-gray-800"></div>
+                    <div>
+                        <h4 class="text-3xl font-bold text-white">3</h4>
+                        <p class="text-gray-500 text-sm">Masterpieces</p>
+                    </div>
+                    <div class="h-10 w-px bg-gray-800"></div>
+                    <div>
+                        <h4 class="text-3xl font-bold text-white">Hot</h4>
+                        <p class="text-gray-500 text-sm">Made to Order</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image/Visuals -->
+            <div class="w-full md:w-1/2 mt-16 md:mt-0 relative hero-image-container">
+                <!-- Abstract Representation of Kottu since we don't have real images -->
+                <div class="relative w-full max-w-md mx-auto aspect-square rounded-full bg-gradient-to-tr from-gray-900 to-gray-800 flex items-center justify-center border-4 border-gray-800 shadow-2xl relative z-10 overflow-hidden group">
+                    
+                    <!-- Decorative Elements inside circle -->
+                    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                    
+                    <div class="text-center relative z-20 transform transition-transform duration-500 group-hover:scale-110">
+                        <i class="fa-solid fa-utensils text-7xl text-yellow-400 mb-4 drop-shadow-[0_0_10px_rgba(255,215,0,0.8)]"></i>
+                        <h3 class="text-2xl font-bold text-white">KOTTU KADE</h3>
+                        <p class="text-yellow-400 font-medium">Signature Dishes</p>
+                    </div>
+
+                    <!-- Floating Badges -->
+                    <div class="absolute top-10 right-10 bg-black/60 backdrop-blur px-4 py-2 rounded-xl border border-gray-700 animate-bounce" style="animation-duration: 3s;">
+                        🧀 Extra Cheese
+                    </div>
+                    <div class="absolute bottom-10 left-10 bg-black/60 backdrop-blur px-4 py-2 rounded-xl border border-gray-700 animate-bounce" style="animation-duration: 4s; animation-delay: 1s;">
+                        🌶️ Spicy Level: Customizable
+                    </div>
+                </div>
+
+                <!-- Background Glow behind image -->
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-lg aspect-square bg-yellow-500/20 rounded-full blur-[100px] -z-10"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="py-24 relative bg-[#0f0f0f]">
+        <div class="container mx-auto px-6 md:px-12">
+            
+            <div class="text-center mb-16 section-header">
+                <h4 class="text-yellow-400 font-bold uppercase tracking-wider mb-2">The Holy Trinity</h4>
+                <h2 class="text-4xl md:text-5xl font-black mb-4">Our <span class="text-white border-b-4 border-red-500">Menu</span></h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">We keep it simple. Only three items, but perfected over years. Every portion is generously loaded with our signature cheese blend.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Menu Item 1: Cheese Chicken -->
+                <div class="menu-card rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg z-10">
+                        BEST SELLER
+                    </div>
+                    
+                    <div class="h-48 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 mb-6 flex items-center justify-center relative overflow-hidden border border-gray-700">
+                        <i class="fa-solid fa-drumstick-bite text-6xl text-gray-500 group-hover:text-yellow-400 transition-colors duration-300"></i>
+                        <!-- Cheese drip effect (CSS) -->
+                        <div class="absolute top-0 left-0 w-full h-2 bg-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-2xl font-bold text-white">Cheese Chicken Kottu</h3>
+                        <span class="text-xl font-bold text-yellow-400">Rs. 1800</span>
+                    </div>
+                    
+                    <p class="text-gray-400 text-sm mb-6 h-16">
+                        Tender, spiced roast chicken chopped with fresh vegetables, roti, and smothered in our melting triple-cheese blend.
+                    </p>
+                    
+                    <button class="w-full py-3 rounded-xl bg-gray-800 hover:bg-yellow-400 text-white hover:text-black font-semibold transition-colors duration-300 flex items-center justify-center gap-2">
+                        Order Now <i class="fa-solid fa-motorcycle"></i>
+                    </button>
+                </div>
+
+                <!-- Menu Item 2: Cheese Fish -->
+                <div class="menu-card rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="h-48 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 mb-6 flex items-center justify-center relative overflow-hidden border border-gray-700">
+                        <i class="fa-solid fa-fish text-6xl text-gray-500 group-hover:text-yellow-400 transition-colors duration-300"></i>
+                        <div class="absolute top-0 left-0 w-full h-2 bg-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-2xl font-bold text-white">Cheese Fish Kottu</h3>
+                        <span class="text-xl font-bold text-yellow-400">Rs. 1900</span>
+                    </div>
+                    
+                    <p class="text-gray-400 text-sm mb-6 h-16">
+                        Crispy fried seer fish chunks mixed with leeks, carrots, spices, and completely covered in gooey melted cheese.
+                    </p>
+                    
+                    <button class="w-full py-3 rounded-xl bg-gray-800 hover:bg-yellow-400 text-white hover:text-black font-semibold transition-colors duration-300 flex items-center justify-center gap-2">
+                        Order Now <i class="fa-solid fa-motorcycle"></i>
+                    </button>
+                </div>
+
+                <!-- Menu Item 3: Cheese Veg -->
+                <div class="menu-card rounded-2xl p-6 relative overflow-hidden group">
+                    <div class="h-48 rounded-xl bg-gradient-to-br from-gray-800 to-gray-900 mb-6 flex items-center justify-center relative overflow-hidden border border-gray-700">
+                        <i class="fa-solid fa-carrot text-6xl text-gray-500 group-hover:text-yellow-400 transition-colors duration-300"></i>
+                        <div class="absolute top-0 left-0 w-full h-2 bg-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="text-2xl font-bold text-white">Cheese Veg Kottu</h3>
+                        <span class="text-xl font-bold text-yellow-400">Rs. 1400</span>
+                    </div>
+                    
+                    <p class="text-gray-400 text-sm mb-6 h-16">
+                        A vegetarian delight. Extra cabbage, carrots, leeks, and mushrooms, bound together by our rich, creamy cheese sauce.
+                    </p>
+                    
+                    <button class="w-full py-3 rounded-xl bg-gray-800 hover:bg-yellow-400 text-white hover:text-black font-semibold transition-colors duration-300 flex items-center justify-center gap-2">
+                        Order Now <i class="fa-solid fa-motorcycle"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience/Vibe Section -->
+    <section id="about" class="py-24 bg-black relative border-y border-gray-800">
+        <!-- Abstract shape -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
+            <div class="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-yellow-500 blur-[120px]"></div>
+        </div>
+
+        <div class="container mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center gap-12">
+            
+            <div class="w-full md:w-1/2 relative about-image">
+                <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-gray-900 border border-gray-800 relative">
+                    <!-- Simulating an image with CSS styling -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjMTgxODE4Ij48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDBMOCA4Wk04IDBMMCA4WiIgc3Ryb2tlPSIjMjIyMjIyIiBzdHJva2Utd2lkdGg9IjEiPjwvcGF0aD4KPC9zdmc+')]">
+                        <i class="fa-solid fa-fire-burner text-8xl text-yellow-400/50 mb-6"></i>
+                        <h3 class="text-3xl font-bold text-gray-300 mb-2">The Rhythm of Kottu</h3>
+                        <p class="text-gray-500">Tak.. Tak.. Tak.. The sound of perfection.</p>
+                    </div>
+                </div>
+                
+                <!-- Overlay Card -->
+                <div class="absolute -bottom-6 -right-6 md:-right-10 bg-gray-900 border border-yellow-500/30 p-6 rounded-xl shadow-2xl backdrop-blur-md max-w-xs">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="w-12 h-12 rounded-full bg-yellow-400 flex items-center justify-center text-black font-bold text-xl">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white">Top Rated</h4>
+                            <p class="text-xs text-yellow-400">By thousands of foodies</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 about-content">
+                <h4 class="text-yellow-400 font-bold uppercase tracking-wider mb-2">Why Us?</h4>
+                <h2 class="text-4xl md:text-5xl font-black mb-6">Not Just Food.<br>It's an <span class="text-gradient">Emotion.</span></h2>
+                
+                <p class="text-gray-400 mb-6 text-lg">
+                    At KOTTU KADE, we didn't want to be a master of everything. We wanted to be the indisputable king of one thing: <strong class="text-white">Cheese Kottu</strong>. 
+                </p>
+                <p class="text-gray-400 mb-8 text-lg">
+                    By limiting our menu to three exquisite variations (Chicken, Fish, Veg), we ensure that every single dish that leaves our hotplate is a masterpiece. Fresh ingredients, our secret spice blend, and a generous mountain of premium cheese.
+                </p>
+
+                <ul class="space-y-4">
+                    <li class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-yellow-400/20 text-yellow-400 flex items-center justify-center">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium">Premium Triple-Cheese Blend</span>
+                    </li>
+                    <li class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-yellow-400/20 text-yellow-400 flex items-center justify-center">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium">Fresh Daily Sourced Ingredients</span>
+                    </li>
+                    <li class="flex items-center gap-4">
+                        <div class="w-8 h-8 rounded-full bg-yellow-400/20 text-yellow-400 flex items-center justify-center">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+                        <span class="text-gray-200 font-medium">Authentic Sri Lankan Street Vibe</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Contact/Footer Section -->
+    <section id="contact" class="py-24 bg-[#121212] relative overflow-hidden">
+        
+        <div class="container mx-auto px-6 md:px-12 relative z-10">
+            <div class="bg-gray-900 rounded-3xl p-8 md:p-12 border border-gray-800 flex flex-col md:flex-row gap-12 contact-card">
+                
+                <!-- Info -->
+                <div class="w-full md:w-1/2">
+                    <h2 class="text-4xl font-black mb-2">Come Get It <span class="text-yellow-400">Hot!</span></h2>
+                    <p class="text-gray-400 mb-8">Drop by for the best cheese kottu in town, or call us to place an order for pickup/delivery.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-yellow-400 text-xl shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg">Location</h4>
+                                <p class="text-gray-500">123 Street Food Avenue,<br>Colombo 07, Sri Lanka</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-yellow-400 text-xl shrink-0">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg">Call Us</h4>
+                                <p class="text-gray-500">077 123 4567<br>011 234 5678</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-yellow-400 text-xl shrink-0">
+                                <i class="fa-solid fa-clock"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-bold text-lg">Opening Hours</h4>
+                                <p class="text-gray-500">Everyday: 5:00 PM - 12:00 AM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Call to Action / Quick Message -->
+                <div class="w-full md:w-1/2 bg-black rounded-2xl p-6 md:p-8 border border-gray-800">
+                    <h3 class="text-2xl font-bold text-white mb-6">Quick Pre-Order</h3>
+                    <form class="space-y-4" onsubmit="event.preventDefault(); alertCustom('Order received! We will call you back shortly to confirm.');">
+                        <div>
+                            <input type="text" placeholder="Your Name" required class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-400 transition-colors">
+                        </div>
+                        <div>
+                            <input type="tel" placeholder="Phone Number" required class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-400 transition-colors">
+                        </div>
+                        <div>
+                            <select class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-yellow-400 transition-colors appearance-none">
+                                <option value="" disabled selected>Select Your Kottu</option>
+                                <option value="chicken">Cheese Chicken Kottu</option>
+                                <option value="fish">Cheese Fish Kottu</option>
+                                <option value="veg">Cheese Veg Kottu</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-500 text-black font-bold text-lg py-3 rounded-lg transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                            Send Pre-Order Request
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-black py-8 border-t border-gray-900 text-center">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid fa-fire text-yellow-400"></i>
+                <span class="text-xl font-black text-white">KOTTU<span class="text-yellow-400">KADE</span></span>
+            </div>
+            <p class="text-gray-600 text-sm">© 2026 Kottu Kade. All rights reserved. Crafted with ❤️ & 🧀</p>
+            <div class="flex gap-4">
+                <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:text-yellow-400 hover:bg-gray-800 transition-all"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:text-yellow-400 hover:bg-gray-800 transition-all"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:text-yellow-400 hover:bg-gray-800 transition-all"><i class="fa-brands fa-tiktok"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Custom Alert Box -->
+    <div id="custom-alert" class="fixed bottom-10 right-10 bg-gray-900 border-l-4 border-yellow-400 text-white px-6 py-4 rounded shadow-2xl z-[100] translate-y-[200%] transition-transform duration-300 flex items-center gap-4">
+        <i class="fa-solid fa-bell text-yellow-400 text-xl"></i>
+        <p id="alert-message" class="font-medium">Message</p>
+        <button onclick="closeAlert()" class="ml-4 text-gray-500 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <script>
+        // Custom Alert Function
+        function alertCustom(message) {
+            const alertBox = document.getElementById('custom-alert');
+            const alertMsg = document.getElementById('alert-message');
+            alertMsg.textContent = message;
+            alertBox.style.transform = 'translateY(0)';
+            
+            setTimeout(() => {
+                closeAlert();
+            }, 3000);
+        }
+
+        function closeAlert() {
+            const alertBox = document.getElementById('custom-alert');
+            alertBox.style.transform = 'translateY(200%)';
+        }
+
+        // Wait for DOM to load
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Remove Loader
+            setTimeout(() => {
+                const loader = document.getElementById('loader');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    initAnimations();
+                }, 500);
+            }, 1500); // Fake loading time for aesthetic
+
+            // Mobile Menu Toggle
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const closeBtn = document.getElementById('close-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+
+            function toggleMenu() {
+                if (mobileMenu.classList.contains('translate-x-full')) {
+                    mobileMenu.classList.remove('translate-x-full');
+                    mobileMenu.classList.add('translate-x-0');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling
+                } else {
+                    mobileMenu.classList.add('translate-x-full');
+                    mobileMenu.classList.remove('translate-x-0');
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            mobileBtn.addEventListener('click', toggleMenu);
+            closeBtn.addEventListener('click', toggleMenu);
+            
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', toggleMenu);
+            });
+
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('py-2');
+                    navbar.classList.remove('py-4');
+                    navbar.classList.add('shadow-lg');
+                } else {
+                    navbar.classList.add('py-4');
+                    navbar.classList.remove('py-2');
+                    navbar.classList.remove('shadow-lg');
+                }
+            });
+
+            // GSAP Animations
+            function initAnimations() {
+                // Register ScrollTrigger
+                gsap.registerPlugin(ScrollTrigger);
+
+                // Hero Section Intro Animation
+                const tl = gsap.timeline();
+                
+                tl.from(".hero-content > *", {
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.2,
+                    ease: "power3.out"
+                })
+                .from(".hero-image-container", {
+                    scale: 0.8,
+                    opacity: 0,
+                    duration: 1,
+                    ease: "back.out(1.7)"
+                }, "-=0.6");
+
+                // Menu Section Scroll Animation
+                gsap.from(".section-header", {
+                    scrollTrigger: {
+                        trigger: "#menu",
+                        start: "top 80%",
+                    },
+                    y: 30,
+                    opacity: 0,
+                    duration: 0.8
+                });
+
+                gsap.from(".menu-card", {
+                    scrollTrigger: {
+                        trigger: ".menu-card",
+                        start: "top 85%",
+                    },
+                    y: 50,
+                    opacity: 0,
+                    duration: 0.6,
+                    stagger: 0.2,
+                    ease: "power2.out"
+                });
+
+                // About Section Scroll Animation
+                gsap.from(".about-image", {
+                    scrollTrigger: {
+                        trigger: "#about",
+                        start: "top 70%",
+                    },
+                    x: -50,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: "power2.out"
+                });
+
+                gsap.from(".about-content > *", {
+                    scrollTrigger: {
+                        trigger: "#about",
+                        start: "top 70%",
+                    },
+                    x: 50,
+                    opacity: 0,
+                    duration: 0.8,
+                    stagger: 0.1,
+                    ease: "power2.out"
+                });
+
+                // Contact Section Scroll Animation
+                gsap.from(".contact-card", {
+                    scrollTrigger: {
+                        trigger: "#contact",
+                        start: "top 80%",
+                    },
+                    y: 40,
+                    opacity: 0,
+                    duration: 1,
+                    ease: "power3.out"
+                });
+            }
+            
+            // Add click events to 'Order Now' buttons in menu
+            const orderBtns = document.querySelectorAll('.menu-card button');
+            orderBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const itemName = btn.parentElement.querySelector('h3').innerText;
+                    alertCustom(`Great choice! Scroll down to the contact section to pre-order your ${itemName}.`);
+                    
+                    // Smooth scroll to contact
+                    setTimeout(() => {
+                        document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+                    }, 1000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
